@@ -14,6 +14,11 @@ class Biedronka:
 				break
 			break
 
+	def get_url(self):
+		link = f'https://www.biedronka.pl{self.link}'
+
+		return link
+
 	def get_product(self):
 		url = f'https://www.biedronka.pl{self.link}'
 		page = urllib.request.urlopen(url) # Going to product page
@@ -39,9 +44,33 @@ class Biedronka:
 		else:
 			tip = ''
 
-		return self.product
+		return self.product.string
 
 	def get_price(self):
 		price = f'{self.pln.string},{self.gr.string}'
 
 		return price
+
+	def get_basis_weight(self):
+		url = f'https://www.biedronka.pl{self.link}'
+		page = urllib.request.urlopen(url)  # Going to product page
+		soup = bs.BeautifulSoup(page, 'lxml')
+
+		basis_weight = soup.select_one('#container > div:nth-child(2) > div > div > article > div.prod-cat-descryption > span > span.product-description.price_per_kg.product173342')
+
+		if basis_weight != None:
+			basis_weight = basis_weight.string.replace(' ', '')
+		else:
+			pass
+
+		return basis_weight
+
+	def get_amount(self):
+		url = f'https://www.biedronka.pl{self.link}'
+		page = urllib.request.urlopen(url)  # Going to product page
+		soup = bs.BeautifulSoup(page, 'lxml')
+
+		for span in soup.find_all('span', {'class':'amount'}):
+			amount = span
+
+		return  amount
